@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  mcpjungle:
+    build:
+      context: .
+      dockerfile: Dockerfile.mcpjungle
+    image: local/mcpjungle-bun:latest
+    container_name: mcpjungle
+    restart: unless-stopped
+    ports:
+      - "5432:8080"
+    volumes:
+      - mcpjungle_data:/data
+    environment:
+      HOME: /root
+      BUN_INSTALL: /usr/local/bun
+      PATH: /usr/local/bun/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8080/health"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+volumes:
+  mcpjungle_data:
